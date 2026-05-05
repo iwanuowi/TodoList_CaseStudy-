@@ -14,10 +14,7 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         val id = arguments?.getInt("id")
-        val title = arguments?.getString("title")
-        val details = arguments?.getString("details")
-        val meaning = arguments?.getString("meaning")
-        val synonyms = arguments?.getString("synonyms")
+        val todo = TodoManager.getAllTodos().find{it.id == id}
 
         val btnUpdate = view.findViewById<MaterialButton>(R.id.btnUpdate)
         val btnDone = view.findViewById<MaterialButton>(R.id.btnDone)
@@ -29,10 +26,10 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
         val synonymsText = view.findViewById<TextView>(R.id.synonymText)
 
         // UI bind
-        titleText.text = title ?: "No title"
-        detailsText.text = details ?: "No details"
-        meaningText.text = meaning ?: "No meaning available"
-        synonymsText.text = synonyms ?: "No synonyms available"
+        titleText.text = todo?.title ?: "No title"
+        detailsText.text = todo?.details ?: "No details"
+        meaningText.text = todo?.meaning ?: "No meaning available"
+        synonymsText.text = todo?.synonyms ?: "No synonyms available"
 
         // 🔥 DONE
         btnDone.setOnClickListener {
@@ -51,6 +48,7 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
                     TodoManager.markAsDone(it)
                 }
 
+                parentFragmentManager.setFragmentResult("refresh", Bundle())
                 dialog.dismiss()
                 parentFragmentManager.popBackStack()
             }
@@ -85,6 +83,7 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
                     TodoManager.deleteTodo(it)
                 }
 
+                parentFragmentManager.setFragmentResult("refresh", Bundle())
                 dialog.dismiss()
                 parentFragmentManager.popBackStack()
             }
@@ -94,22 +93,26 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
         }
 
         btnUpdate.setOnClickListener {
-            val bundle = Bundle().apply {
-                putInt("id", id ?: -1)
-                putString("title", title)
-                putString("details", details)
-                putString("meaning", meaning)
-                putString("synonyms", synonyms)
-            }
 
-            val fragment = UpdateWordFragment().apply {
-                arguments = bundle
-            }
+            todo?.let {
 
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.mainContainer, fragment)
-                .addToBackStack(null)
-                .commit()
+                val bundle = Bundle().apply {
+                    putInt("id", it.id)
+                    putString("title", it.title)
+                    putString("details", it.details)
+                    putString("meaning", it.meaning)
+                    putString("synonyms", it.synonyms)
+                }
+
+                val fragment = UpdateWordFragment().apply {
+                    arguments = bundle
+                }
+
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.mainContainer, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
 
 

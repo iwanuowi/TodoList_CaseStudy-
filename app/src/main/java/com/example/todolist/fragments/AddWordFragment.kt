@@ -36,6 +36,9 @@ class AddWordFragment : Fragment(R.layout.add_word_fragment) {
 
             TodoManager.addTodo(newTodo)
 
+            // 🔥 tell list to refresh
+            parentFragmentManager.setFragmentResult("refresh", Bundle())
+
             // go back
             parentFragmentManager.popBackStack()
         }

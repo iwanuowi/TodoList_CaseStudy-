@@ -35,19 +35,25 @@ class UpdateWordFragment : Fragment(R.layout.update_word_fragment) {
         synonymsInput.setText(synonyms)
 
         btnUpdate.setOnClickListener {
+
             if (id != null) {
+
                 val updatedTodo = TodoDetails(
                     id = id,
                     title = titleInput.text.toString(),
                     details = detailsInput.text.toString(),
                     meaning = meaningInput.text.toString(),
                     synonyms = synonymsInput.text.toString(),
-                    status = ToDoStatus.NEW // or keep old status if you want
+                    status = ToDoStatus.NEW
                 )
 
                 TodoManager.updateTodo(updatedTodo)
+
+                // 🔥 tell list to refresh
+                parentFragmentManager.setFragmentResult("refresh", Bundle())
             }
 
+            // 🔥 go back to MAIN screen (not just previous fragment)
             parentFragmentManager.popBackStack()
         }
 

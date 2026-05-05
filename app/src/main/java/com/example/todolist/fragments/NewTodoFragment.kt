@@ -35,6 +35,13 @@ class NewTodoFragment : Fragment(R.layout.new_todo_fragment) {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        parentFragmentManager.setFragmentResultListener("refresh", this) { _, _ ->
+
+            currentList = TodoManager.getNewTodos().toMutableList()
+            adapter.updateList(currentList)
+            updateUI()
+        }
+
         // 🔹 Load NEW todos from TodoManager
         currentList = TodoManager.getNewTodos().toMutableList()
 
@@ -42,10 +49,6 @@ class NewTodoFragment : Fragment(R.layout.new_todo_fragment) {
 
             val bundle = Bundle().apply {
                 putInt("id", item.id)
-                putString("title", item.title)
-                putString("details", item.details)
-                putString("meaning", item.meaning)
-                putString("synonyms", item.synonyms)
             }
 
             val fragment = WordDetailsFragment().apply {
@@ -126,15 +129,15 @@ class NewTodoFragment : Fragment(R.layout.new_todo_fragment) {
     }
 
     //Refresh when returning from Add/Edit screen
-    override fun onResume() {
-        super.onResume()
-
-        currentList = TodoManager.getNewTodos().toMutableList()
-
-        if (::adapter.isInitialized) {
-            adapter.updateList(currentList)
-        }
-
-        updateUI()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//
+//        currentList = TodoManager.getNewTodos().toMutableList()
+//
+//        if (::adapter.isInitialized) {
+//            adapter.updateList(currentList)
+//        }
+//
+//        updateUI()
+//    }
 }

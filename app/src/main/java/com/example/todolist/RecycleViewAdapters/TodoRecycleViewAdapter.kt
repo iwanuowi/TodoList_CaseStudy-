@@ -40,5 +40,7 @@ class TodoRecycleViewAdapter(
         notifyDataSetChanged()
     }
 
+
+
     override fun getItemCount(): Int = todoDetails.size
 }

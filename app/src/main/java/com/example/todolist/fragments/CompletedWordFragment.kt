@@ -32,6 +32,13 @@ class CompletedWordFragment : Fragment(R.layout.completed_word_fragment) {
         val emptyLayout = view.findViewById<View>(R.id.emptyLayout)
         val imageButton3 = view.findViewById<View>(R.id.imageButton3)
 
+        parentFragmentManager.setFragmentResultListener("refresh", this) { _, _ ->
+
+            currentList = TodoManager.getDoneTodos().toMutableList()
+            adapter.updateList(currentList)
+            updateUI()
+        }
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         currentList = TodoManager.getDoneTodos().toMutableList()
@@ -103,6 +110,7 @@ class CompletedWordFragment : Fragment(R.layout.completed_word_fragment) {
                     }
                 }
 
+
                 adapter.updateList(currentList)
                 updateUI()
 
@@ -115,16 +123,12 @@ class CompletedWordFragment : Fragment(R.layout.completed_word_fragment) {
     }
 
     // 🔥 IMPORTANT: refresh when returning
-    override fun onResume() {
-        super.onResume()
-
-        currentList = if (this is CompletedWordFragment) {
-            TodoManager.getDoneTodos().toMutableList()
-        } else {
-            TodoManager.getNewTodos().toMutableList()
-        }
-
-        adapter.updateList(currentList)
-        updateUI()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//
+//        currentList = TodoManager.getDoneTodos().toMutableList()
+//
+//        adapter.updateList(currentList)
+//        updateUI()
+//    }
 }

@@ -44,10 +44,10 @@ object TodoManager {
         }
     }
 
-    fun markAsNew(id: Int) {
-        val index = todoList.indexOfFirst { it.id == id }
-        if (index != -1) {
-            todoList[index] = todoList[index].copy(status = ToDoStatus.NEW)
-        }
-    }
+//    fun markAsNew(id: Int) {
+//        val index = todoList.indexOfFirst { it.id == id }
+//        if (index != -1) {
+//            todoList[index] = todoList[index].copy(status = ToDoStatus.NEW)
+//        }
+//    }
 }
