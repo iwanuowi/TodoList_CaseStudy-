@@ -3,13 +3,16 @@ package com.example.todolist.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.todolist.R
 import com.example.todolist.models.ToDoStatus
 import com.example.todolist.models.TodoDetails
-import com.example.todolist.models.TodoManager
+import com.example.todolist.viewmodel.TodoViewModel
 import com.google.android.material.button.MaterialButton
 
 class UpdateWordFragment : Fragment(R.layout.update_word_fragment) {
+
+    private val viewModel: TodoViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,13 +47,10 @@ class UpdateWordFragment : Fragment(R.layout.update_word_fragment) {
                     details = detailsInput.text.toString(),
                     meaning = meaningInput.text.toString(),
                     synonyms = synonymsInput.text.toString(),
-                    status = ToDoStatus.NEW
+                    status = ToDoStatus.NEW // ONLY if you intentionally want reset
                 )
 
-                TodoManager.updateTodo(updatedTodo)
-
-                // 🔥 tell list to refresh
-                parentFragmentManager.setFragmentResult("refresh", Bundle())
+                viewModel.update(updatedTodo)
             }
 
             // 🔥 go back to MAIN screen (not just previous fragment)

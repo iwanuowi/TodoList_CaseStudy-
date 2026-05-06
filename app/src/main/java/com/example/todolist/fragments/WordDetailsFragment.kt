@@ -5,7 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.todolist.R
-import com.example.todolist.models.TodoManager
+import com.example.todolist.models.DatabaseInstance
+import com.example.todolist.models.ToDoStatus
 import com.google.android.material.button.MaterialButton
 
 class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
@@ -14,7 +15,10 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         val id = arguments?.getInt("id")
-        val todo = TodoManager.getAllTodos().find{it.id == id}
+
+        // connect to room database
+        val db = DatabaseInstance.getDatabase(requireContext())
+        val todo = db.todoDao().getById(id!!)
 
         val btnUpdate = view.findViewById<MaterialButton>(R.id.btnUpdate)
         val btnDone = view.findViewById<MaterialButton>(R.id.btnDone)
@@ -44,11 +48,12 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
             val noBtn = dialogView.findViewById<MaterialButton>(R.id.btnNo)
 
             yesBtn.setOnClickListener {
-                id?.let {
-                    TodoManager.markAsDone(it)
+
+                todo?.let {
+                    val updated = it.copy(status = ToDoStatus.DONE)
+                    db.todoDao().update(updated)
                 }
 
-                parentFragmentManager.setFragmentResult("refresh", Bundle())
                 dialog.dismiss()
                 parentFragmentManager.popBackStack()
             }
@@ -79,11 +84,11 @@ class WordDetailsFragment : Fragment(R.layout.word_details_fragment) {
             }
 
             btnDeleteConfirm.setOnClickListener {
-                id?.let {
-                    TodoManager.deleteTodo(it)
+
+                todo?.let {
+                    db.todoDao().delete(it)
                 }
 
-                parentFragmentManager.setFragmentResult("refresh", Bundle())
                 dialog.dismiss()
                 parentFragmentManager.popBackStack()
             }

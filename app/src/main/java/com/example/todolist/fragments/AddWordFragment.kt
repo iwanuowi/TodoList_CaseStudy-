@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment
 import com.example.todolist.R
 import com.example.todolist.models.TodoDetails
 import com.example.todolist.models.ToDoStatus
-import com.example.todolist.models.TodoManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import androidx.fragment.app.viewModels
+import com.example.todolist.viewmodel.TodoViewModel
 
 class AddWordFragment : Fragment(R.layout.add_word_fragment) {
+
+    private val viewModel: TodoViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,12 +37,8 @@ class AddWordFragment : Fragment(R.layout.add_word_fragment) {
                 status = ToDoStatus.NEW
             )
 
-            TodoManager.addTodo(newTodo)
+            viewModel.insert(newTodo)
 
-            // 🔥 tell list to refresh
-            parentFragmentManager.setFragmentResult("refresh", Bundle())
-
-            // go back
             parentFragmentManager.popBackStack()
         }
 

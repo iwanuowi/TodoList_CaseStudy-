@@ -13,6 +13,8 @@ class TodoRecycleViewAdapter(
     private val onItemClick: (TodoDetails) -> Unit
 ) : RecyclerView.Adapter<TodoRecycleViewAdapter.TodoViewHolder>() {
 
+    private var lastClickTime = 0L
+
     inner class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.textViewTitle)
         val detailTextView: TextView = itemView.findViewById(R.id.textViewDetail)
@@ -31,6 +33,12 @@ class TodoRecycleViewAdapter(
         holder.detailTextView.text = todo.details
 
         holder.itemView.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+
+            if (currentTime - lastClickTime < 600) return@setOnClickListener
+
+            lastClickTime = currentTime
+
             onItemClick(todo)
         }
     }
@@ -39,8 +47,6 @@ class TodoRecycleViewAdapter(
         todoDetails = newList
         notifyDataSetChanged()
     }
-
-
 
     override fun getItemCount(): Int = todoDetails.size
 }
